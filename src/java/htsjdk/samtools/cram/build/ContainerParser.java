@@ -35,6 +35,7 @@ import htsjdk.samtools.util.Log.LogLevel;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,6 +54,7 @@ public class ContainerParser {
     public List<CramCompressionRecord> getRecords(final Container container,
                                                   ArrayList<CramCompressionRecord> records, ValidationStringency validationStringency) throws IllegalArgumentException,
             IllegalAccessException {
+        if (container.isEOF()) return Collections.emptyList();
         final long time1 = System.nanoTime();
         if (records == null)
             records = new ArrayList<CramCompressionRecord>(container.nofRecords);
