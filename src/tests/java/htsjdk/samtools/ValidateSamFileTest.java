@@ -411,7 +411,7 @@ public class ValidateSamFileTest {
         final File outFile = File.createTempFile("validation", ".txt");
         outFile.deleteOnExit();
         final PrintWriter out = new PrintWriter(outFile);
-        new SamFileValidator(out, 8000).setValidateIndex(true).validateSamFileSummary(samReader, reference);
+        new SamFileValidator(out, 8000).setIndexValidationStringency(ValidationStringency.STRICT).validateSamFileSummary(samReader, reference);
         final LineNumberReader reader = new LineNumberReader(new FileReader(outFile));
         if (reader.readLine().equals("No errors found")) {
             return new Histogram<String>();
