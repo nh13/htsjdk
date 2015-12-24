@@ -338,6 +338,55 @@ public class VariantContextUtils {
     }
 
     /**
+     * Answers if the provided variant is transitional (otherwise, it's transversional).
+     * Transitions:
+     * A->G
+     * G->A
+     * C->T
+     * T->C
+     * <p/>
+     * Transversions:
+     * A->C
+     * A->T
+     * C->A
+     * C->G
+     * G->C
+     * G->T
+     * T->A
+     * T->G
+     *
+     * @param vc a biallelic polymorphic SNP
+     * @return true if a transition and false if transversion
+     * @throws IllegalArgumentException if vc is monomorphic, not a SNP or not bi-allelic.
+
+          */
+
+    static public boolean isTransition(final VariantContext vc) throws IllegalAccessException {
+        final byte refAllele = vc.getReference().getBases()[0];
+        final Collection<Allele> altAlleles = vc.getAlternateAlleles();
+
+        if(vc.type == VariantContext.Type.NO_VARIATION) {
+            throw new IllegalAccessException("Variant context is monomorphic: " + vc.toString());
+        }
+
+        if(vc.type != VariantContext.Type.SNP) {
+            throw new IllegalAccessException("Variant context is not a SNP: " + vc.toString());
+        }
+
+        if(altAlleles.size() != 1 ) {
+            throw new IllegalAccessException("Expected exactly 1 alternative Allele. Found: " + altAlleles.size());
+        }
+
+        final Byte altAllele = altAlleles.iterator().next().getBases()[0];
+
+        return (refAllele == 'A' && altAllele == 'G')
+                || (refAllele == 'G' && altAllele == 'A')
+                || (refAllele == 'C' && altAllele == 'T')
+                || (refAllele == 'T' && altAllele == 'C');
+    }
+
+
+    /**
      * Returns a newly allocated VC that is the same as VC, but without genotypes
      * @param vc  variant context
      * @return  new VC without genotypes
