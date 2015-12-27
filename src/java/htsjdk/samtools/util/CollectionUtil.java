@@ -43,28 +43,24 @@ import java.util.function.Function;
 public class CollectionUtil {
 
     /** Simple case-insensitive lexical comparator of objects using their {@link Object#toString()} value. */
-    final public static Comparator<Object> OBJECT_TOSTRING_COMPARATOR = new Comparator<Object>() {
-        @Override
-        public int compare(final Object o1, final Object o2) {
-            return o1.toString().compareToIgnoreCase(o2.toString());
-        }
-    };
+    final public static Comparator<Object> OBJECT_TOSTRING_COMPARATOR = (o1, o2) -> o1.toString().compareToIgnoreCase(o2.toString());
 
     public static <T> List<T> makeList (final T... list) {
-        final List<T> result = new ArrayList<T>();
+        final List<T> result;
+        result = new ArrayList<T>();
         Collections.addAll(result, list);
 
         return result;
     }
     
     public static <T> Set<T> makeSet (final T... list) {
-        final Set<T> result = new HashSet<T>();
+        final Set<T> result = new HashSet<>();
         Collections.addAll(result, list);
         return result;
     }
     
     public static <T> Collection<T> makeCollection (final Iterator<T> i) {
-        final List<T> list = new LinkedList<T>();
+        final List<T> list = new LinkedList<>();
         while (i.hasNext()) {
             list.add(i.next());
         }
@@ -102,8 +98,24 @@ public class CollectionUtil {
 
         private void initializeKeyIfUninitialized(final K k) {
             if (!this.containsKey(k))
-                this.put(k, new LinkedList<V>());
+                this.put(k, new LinkedList<>());
         }
+    }
+
+    /**
+     * Partitions a collection into groups based on a characteristics of that group.  Partitions are embodied in a map, whose keys are the
+     * value of that characteristic, and the values are the partition of elements whose characteristic evaluate to that key.
+     */
+    @Deprecated //use the version below instead!
+    public static <K, V> Map<K,Collection<V>> partition(final Collection<V> collection,  final Partitioner<V, K> p) {
+        final MultiMap<K, V> partitionToValues = new MultiMap<>();
+        for (final V entry : collection) {
+            partitionToValues.append(p.getPartition(entry), entry);
+        }
+        return partitionToValues;
+    }
+    public static abstract class Partitioner<V, K> {
+        public abstract K getPartition(final V v);
     }
 
     /** 
@@ -136,12 +148,7 @@ public class CollectionUtil {
         
         /** Creates a defaulting map which defaults to the provided value and with injecting-on-default disabled. */
         public DefaultingMap(final V defaultValue) {
-            this(new Factory<V, K>() {
-                @Override
-                public V make(final K k) {
-                    return defaultValue;
-                }
-            }, false);
+            this(k -> defaultValue, false);
         }
         
         /**
