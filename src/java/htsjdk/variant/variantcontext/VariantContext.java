@@ -1764,7 +1764,7 @@ public class VariantContext implements Feature, Serializable {
      * @param vc is assumed to be a biallelic SNP. Results are undefined otherwise.
      * @return true of input SNP is a transition and false otherwise.
      */
-    static private boolean isTransition(final VariantContext vc) throws IllegalArgumentException {
+    public static boolean isTransition(final VariantContext vc) throws IllegalArgumentException {
 
         if (!vc.isBiallelic()) throw new IllegalArgumentException("Expecting a biallelic Variant context. Found: " + vc.toString());
         if (!vc.isSNP()) throw new IllegalArgumentException("Expecting a SNP. Found: " + vc.toString());
