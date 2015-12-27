@@ -1790,6 +1790,4 @@ public class VariantContext implements Feature, Serializable {
                (refAllele == 'C' && altAllele == 'T') ||
                (refAllele == 'T' && altAllele == 'C');
     }
-
-
 }
