@@ -46,8 +46,7 @@ public class CollectionUtil {
     final public static Comparator<Object> OBJECT_TOSTRING_COMPARATOR = (o1, o2) -> o1.toString().compareToIgnoreCase(o2.toString());
 
     public static <T> List<T> makeList(final T... list) {
-        final List<T> result;
-        result = new ArrayList<T>();
+        final List<T> result = new ArrayList<>();
         Collections.addAll(result, list);
 
         return result;
