@@ -34,6 +34,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 
 /**
  * Small utility methods for dealing with collection classes.
@@ -109,15 +110,12 @@ public class CollectionUtil {
      * Partitions a collection into groups based on a characteristics of that group.  Partitions are embodied in a map, whose keys are the
      * value of that characteristic, and the values are the partition of elements whose characteristic evaluate to that key.
      */
-    public static <K, V> Map<K,Collection<V>> partition(final Collection<V> collection,  final Partitioner<V, K> p) {
-        final MultiMap<K, V> partitionToValues = new MultiMap<K, V>();
+    public static <K, V> Map<K, Collection<V>> partition(final Collection<V> collection, Function<? super V, ? extends K> keyer) {
+        final MultiMap<K, V> partitionToValues = new MultiMap<>();
         for (final V entry : collection) {
-            partitionToValues.append(p.getPartition(entry), entry);
+            partitionToValues.append(keyer.apply(entry), entry);
         }
         return partitionToValues;
-    }
-    public static abstract class Partitioner<V, K> {
-        public abstract K getPartition(final V v);
     }
     
     /**
